@@ -1,0 +1,28 @@
+{
+  "name": "smart-yield-vault-agent",
+  "version": "1.0.0",
+  "description": "AI keeper agent for Smart Yield Vaults on Initia",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/__tests__/**/*.test.js"],
+    "clearMocks": true
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "ethers": "^6.13.4",
+    "node-cron": "^3.0.3",
+    "pg": "^8.13.1",
+    "dotenv": "^16.4.7"
+  }
+}
