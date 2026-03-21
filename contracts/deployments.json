@@ -1,0 +1,10 @@
+{
+  "mockUsdc": "0x9586c1d9de9fd473b961a4ceb5b15a3483daae8a",
+  "strategyRegistry": "0xa858ddacbcae92edb087260705cf8b0d0a1cc8a5",
+  "riskEngine": "0xe8f1775f8d9bc3b902de16c1741e764dc8fb3ded",
+  "vaultManager": "0x6aed4975e5b0180f54899d46e57537ce449f07de",
+  "keeperExecutor": "0xab065e1fb95016583b411f264db937b6ceb53a61",
+  "strategyA": "0x17264ad5c1a73920f673a1d931376f6e663d3629",
+  "strategyB": "0x86f7a62ad57f4f53b263fb9484f8fee897885799",
+  "strategyC": "0xaf0da81c6f1d2f962a8f67b924ae1d48020665bf"
+}

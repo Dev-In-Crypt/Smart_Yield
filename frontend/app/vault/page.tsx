@@ -7,39 +7,27 @@ import { formatUnits } from 'viem';
 import { useVault } from '@/hooks/useVault';
 import { ERC20_ABI, vaultManagerConfig } from '@/lib/contracts';
 
-const S = {
-  page:    { maxWidth: 520, margin: '0 auto', padding: '40px 20px' } as React.CSSProperties,
-  card:    { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 24, marginBottom: 16 } as React.CSSProperties,
-  row:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } as React.CSSProperties,
-  label:   { fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: 4 },
-  value:   { fontSize: 22, fontWeight: 700, color: 'var(--text)' },
-  input:   { width: '100%', background: '#0f1117', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 16px', fontSize: 18, color: 'var(--text)', outline: 'none', marginBottom: 12 } as React.CSSProperties,
-  tab:     (active: boolean): React.CSSProperties => ({
-    flex: 1, padding: '10px 0', fontWeight: 600, fontSize: 14,
-    borderRadius: 8, border: 'none', cursor: 'pointer',
-    background: active ? 'var(--accent)' : 'transparent',
-    color:      active ? '#fff' : 'var(--text-muted)',
-    transition: 'background 0.15s, color 0.15s',
-  }),
-};
-
 export default function VaultPage() {
   const { address, isConnected } = useAccount();
   const { connect }              = useConnect();
   const { disconnect }           = useDisconnect();
-
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
   if (!mounted || !isConnected) {
     return (
-      <div style={{ display: 'flex', minHeight: 'calc(100vh - 57px)', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ ...S.card, textAlign: 'center', maxWidth: 360, padding: 40 }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }}>🔒</div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>Connect your wallet</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 24 }}>To deposit or withdraw, connect a Web3 wallet first.</p>
-          <button className="btn-primary" style={{ width: '100%', fontSize: 16 }} onClick={() => connect({ connector: injected() })}>
-            Connect Wallet
+      <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <div className="glass" style={{ padding: 40, maxWidth: 360, width: '100%', textAlign: 'center' }}>
+          <div style={{ fontSize: 32, marginBottom: 20 }}>⬡</div>
+          <h2 style={{ fontSize: 20, fontWeight: 400, letterSpacing: '-0.01em', marginBottom: 8, color: 'var(--text)' }}>
+            Connect wallet
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.6, marginBottom: 28 }}>
+            Connect a Web3 wallet to deposit or withdraw from the vault.
+          </p>
+          <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}
+            onClick={() => connect({ connector: injected() })}>
+            Connect EVM Wallet
           </button>
         </div>
       </div>
@@ -47,19 +35,48 @@ export default function VaultPage() {
   }
 
   return (
-    <div style={S.page}>
-      <div style={{ ...S.row, marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', margin: 0 }}>Vault</h1>
-        <button
-          onClick={() => disconnect()}
-          style={{ fontSize: 13, color: 'var(--text-muted)', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer' }}
-        >
-          {address?.slice(0, 6)}…{address?.slice(-4)} ✕
-        </button>
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: '1fr 360px', gap: 20, alignItems: 'start' }}>
+
+      {/* ── Left column ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <PositionSummary />
+        <BridgePanel />
       </div>
 
-      <PositionSummary />
-      <VaultForm />
+      {/* ── Right column ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* Wallet header */}
+        <div className="glass" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+            {address?.slice(0, 6)}…{address?.slice(-4)}
+          </span>
+          <button onClick={() => disconnect()} style={{ fontSize: 11, color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: 6, padding: '3px 10px', cursor: 'pointer' }}>
+            Disconnect
+          </button>
+        </div>
+        <VaultForm />
+      </div>
+
+    </div>
+  );
+}
+
+function BridgePanel() {
+  return (
+    <div className="glass" style={{ padding: 20 }}>
+      <p className="panel-title">Interwoven Bridge</p>
+      <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 12 }}>
+        Bridge test assets from Initia testnet to your appchain wallet before deposit.
+      </p>
+      <a
+        href="https://app.initia.xyz/bridge"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-ghost"
+        style={{ fontSize: 13, display: 'inline-flex' }}
+      >
+        Open Bridge ↗
+      </a>
     </div>
   );
 }
@@ -67,11 +84,14 @@ export default function VaultPage() {
 function PositionSummary() {
   const { userAssetsFormatted, userSharesRaw, totalAssetsFormatted, isLoading } = useVault();
   return (
-    <div style={{ ...S.card, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 16 }}>
-      <StatBox label="Your Position"  value={userAssetsFormatted ? `$${Number(userAssetsFormatted).toFixed(2)}` : '—'} />
-      <StatBox label="Vault TVL"      value={totalAssetsFormatted ? `$${Number(totalAssetsFormatted).toFixed(2)}` : '—'} />
-      <StatBox label="Your Shares"    value={userSharesRaw !== undefined ? formatUnits(userSharesRaw, 6) : '—'} />
-      <StatBox label="Status"         value={isLoading ? 'Loading…' : '✅ Live'} />
+    <div className="glass" style={{ padding: 20 }}>
+      <p className="panel-title">Your Position</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <StatBox label="Deposited" value={userAssetsFormatted ? `$${Number(userAssetsFormatted).toFixed(2)}` : '—'} />
+        <StatBox label="Vault TVL"  value={totalAssetsFormatted ? `$${Number(totalAssetsFormatted).toFixed(2)}` : '—'} />
+        <StatBox label="Shares (SYV)" value={userSharesRaw !== undefined ? formatUnits(userSharesRaw, 6) : '—'} mono />
+        <StatBox label="Status" value={isLoading ? 'Loading…' : 'Live'} live={!isLoading} />
+      </div>
     </div>
   );
 }
@@ -100,39 +120,46 @@ function VaultForm() {
     setStatus('');
     try {
       const amountBig = BigInt(Math.floor(Number(amount) * 1e6));
-      if ((allowance.data ?? 0n) < amountBig) {
+      if ((allowance.data ?? BigInt(0)) < amountBig) {
         setStatus('Approving…');
         await approve(amountBig);
         await allowance.refetch();
       }
       setStatus('Depositing…');
       await deposit(amount);
-      setStatus('✅ Deposited!');
+      setStatus('✓ Deposited');
       setAmount('');
     } catch (e: unknown) {
-      setStatus('❌ ' + (e instanceof Error ? e.message : String(e)));
+      setStatus('Error: ' + (e instanceof Error ? e.message.slice(0, 60) : String(e)));
     }
   }
 
   async function handleRedeem() {
-    if (!userSharesRaw) return;
+    if (!amount && !userSharesRaw) return;
     setStatus('Withdrawing…');
     try {
-      await redeem(userSharesRaw);
-      setStatus('✅ Withdrawn!');
+      const sharesAmount = amount
+        ? BigInt(Math.floor(Number(amount) * 1e6))
+        : userSharesRaw!;
+      await redeem(sharesAmount);
+      setStatus('✓ Withdrawn');
+      setAmount('');
     } catch (e: unknown) {
-      setStatus('❌ ' + (e instanceof Error ? e.message : String(e)));
+      setStatus('Error: ' + (e instanceof Error ? e.message.slice(0, 60) : String(e)));
     }
   }
 
   const maxUSDC = usdcBalance.data !== undefined ? formatUnits(usdcBalance.data, 6) : '0';
 
   return (
-    <div style={S.card}>
-      {/* Tabs */}
-      <div style={{ display: 'flex', background: '#0f1117', borderRadius: 10, padding: 4, marginBottom: 24, gap: 4 }}>
+    <div className="glass" style={{ padding: 20 }}>
+      <p className="panel-title">Actions</p>
+
+      {/* Tab bar */}
+      <div className="tab-bar" style={{ marginBottom: 20 }}>
         {(['deposit', 'withdraw'] as const).map((t) => (
-          <button key={t} style={S.tab(tab === t)} onClick={() => { setTab(t); setAmount(''); setStatus(''); }}>
+          <button key={t} className={`tab-item${tab === t ? ' active' : ''}`}
+            onClick={() => { setTab(t); setAmount(''); setStatus(''); }}>
             {t === 'deposit' ? '↓ Deposit' : '↑ Withdraw'}
           </button>
         ))}
@@ -140,31 +167,55 @@ function VaultForm() {
 
       {tab === 'deposit' ? (
         <div>
-          <div style={{ ...S.row, marginBottom: 8 }}>
-            <span style={S.label}>Amount (USDC)</span>
-            <button onClick={() => setAmount(maxUSDC)} style={{ fontSize: 12, color: 'var(--accent-hover)', background: 'none', border: 'none', cursor: 'pointer' }}>
-              Max: {Number(maxUSDC).toFixed(2)}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <span className="label">Amount USDC</span>
+            <button onClick={() => setAmount(maxUSDC)}
+              style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}>
+              MAX {Number(maxUSDC).toFixed(2)}
             </button>
           </div>
-          <input type="number" min="0" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} style={S.input} />
-          <button className="btn-primary" style={{ width: '100%', fontSize: 16 }} onClick={handleDeposit} disabled={isDepositing || isApproving || !amount}>
+          <input
+            className="field-input"
+            type="number" min="0" placeholder="0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            style={{ marginBottom: 14 }}
+          />
+          <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}
+            onClick={handleDeposit}
+            disabled={isDepositing || isApproving || !amount}>
             {isApproving ? 'Approving…' : isDepositing ? 'Depositing…' : 'Deposit USDC'}
           </button>
         </div>
       ) : (
         <div>
-          <p style={{ ...S.label, marginBottom: 8 }}>Your shares to redeem</p>
-          <p style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', marginBottom: 16 }}>
-            {userSharesRaw !== undefined ? formatUnits(userSharesRaw, 6) : '0'} <span style={{ fontSize: 16, color: 'var(--text-muted)' }}>SYV</span>
-          </p>
-          <button className="btn-primary" style={{ width: '100%', fontSize: 16 }} onClick={handleRedeem} disabled={isRedeeming || !userSharesRaw || userSharesRaw === 0n}>
-            {isRedeeming ? 'Withdrawing…' : 'Withdraw All'}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <span className="label">Shares to redeem</span>
+            <button
+              onClick={() => setAmount(userSharesRaw !== undefined ? formatUnits(userSharesRaw, 6) : '0')}
+              style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              MAX {userSharesRaw !== undefined ? Number(formatUnits(userSharesRaw, 6)).toFixed(2) : '0.00'}
+            </button>
+          </div>
+          <input
+            className="field-input"
+            type="number" min="0" placeholder="0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            style={{ marginBottom: 4 }}
+          />
+          <p style={{ fontSize: 11, color: 'var(--text-dim)', fontFamily: 'var(--font-mono)', marginBottom: 14 }}>SYV</p>
+          <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}
+            onClick={handleRedeem}
+            disabled={isRedeeming || (!amount && (!userSharesRaw || userSharesRaw === BigInt(0)))}>
+            {isRedeeming ? 'Withdrawing…' : 'Withdraw'}
           </button>
         </div>
       )}
 
       {status && (
-        <div style={{ marginTop: 16, padding: '12px 16px', background: '#0f1117', borderRadius: 8, fontSize: 14, color: 'var(--text-muted)', textAlign: 'center' }}>
+        <div style={{ marginTop: 14, padding: '10px 14px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
           {status}
         </div>
       )}
@@ -172,11 +223,14 @@ function VaultForm() {
   );
 }
 
-function StatBox({ label, value }: { label: string; value: string }) {
+function StatBox({ label, value, mono, live }: { label: string; value: string; mono?: boolean; live?: boolean }) {
   return (
     <div>
-      <p style={S.label}>{label}</p>
-      <p style={S.value}>{value}</p>
+      <p className="label" style={{ marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 20, fontWeight: mono ? 100 : 300, fontFamily: mono ? 'var(--font-mono)' : 'var(--font-sans)', color: live ? 'var(--green)' : 'var(--text)', letterSpacing: mono ? '-0.01em' : undefined }}>
+        {live && <span style={{ fontSize: 8, marginRight: 6, verticalAlign: 'middle' }}>●</span>}
+        {value}
+      </p>
     </div>
   );
 }

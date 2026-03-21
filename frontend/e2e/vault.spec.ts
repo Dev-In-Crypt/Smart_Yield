@@ -2,22 +2,26 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Vault page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/vault');
+    await page.goto('/vault', { waitUntil: 'networkidle' });
   });
 
   test('shows Connect Wallet prompt when wallet is not connected', async ({ page }) => {
-    // Without an injected wallet the page should show the connect prompt
     await expect(page.getByRole('heading', { name: /Connect your wallet/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Connect Wallet/i })).toBeVisible();
   });
 
-  test('Connect Wallet button is clickable', async ({ page }) => {
+  test('shows Connect Wallet button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /Connect Wallet/i })).toBeEnabled();
+  });
+
+  test('Connect Wallet button is clickable without page crash', async ({ page }) => {
     const btn = page.getByRole('button', { name: /Connect Wallet/i });
-    await expect(btn).toBeEnabled();
-    // Clicking will attempt to open wallet modal — we just verify no page crash
     await btn.click();
-    // Page should not navigate away or throw
     await expect(page).toHaveURL(/\/vault/);
+  });
+
+  test('shows Connect Initia button (InterwovenKit)', async ({ page }) => {
+    // The vault page has a "Connect Initia (InterwovenKit)" button — at least one must be visible
+    await expect(page.getByRole('button', { name: /Connect Initia/i }).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('page title is correct', async ({ page }) => {
@@ -44,21 +48,13 @@ test.describe('Vault page — with mock wallet', () => {
         emit:           () => {},
       };
     });
-    await page.goto('/vault');
+    await page.goto('/vault', { waitUntil: 'networkidle' });
   });
 
-  // wagmi connection requires a full wallet handshake that can't be easily
-  // simulated in Playwright without a real wallet extension. This test verifies
-  // the page loads without errors and at least shows some vault-related UI.
   test('vault page renders without crash when ethereum stub present', async ({ page }) => {
-    // The page should show either the connect prompt or the vault form —
-    // either way it must render something (not a blank/error page).
-    const body = page.locator('body');
-    await expect(body).not.toBeEmpty();
-
-    // The heading or connect button should be on screen
-    const hasHeading     = await page.getByRole('heading').count() > 0;
-    const hasConnectText = await page.getByText(/connect|vault/i).count() > 0;
-    expect(hasHeading || hasConnectText).toBe(true);
+    // Page should show either the connect prompt or the vault form
+    const headingCount = await page.getByRole('heading').count();
+    const connectCount = await page.getByText(/connect/i).count();
+    expect(headingCount + connectCount).toBeGreaterThan(0);
   });
 });

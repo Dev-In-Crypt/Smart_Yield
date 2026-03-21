@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import './globals.css';
 import { Providers } from './providers';
+import { InterwovenActions } from '@/components/InterwovenActions';
 
 export const metadata: Metadata = {
   title:       'Smart Yield Vaults | Initia',
@@ -10,42 +11,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" data-theme="dark" style={{ background: '#111111', colorScheme: 'dark' }}>
+      <body style={{ background: '#111111', color: '#ffffff' }}>
         <Providers>
-          <nav style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '14px 32px',
-            borderBottom: '1px solid var(--border)',
-            background: 'var(--bg-card)',
-            position: 'sticky',
-            top: 0,
-            zIndex: 50,
-          }}>
-            <Link href="/" style={{ fontWeight: 700, fontSize: 18, color: 'var(--text)', textDecoration: 'none' }}>
-              ⚡ Smart Yield
-            </Link>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <NavLink href="/">Home</NavLink>
-              <NavLink href="/vault">Vault</NavLink>
-              <NavLink href="/dashboard">Dashboard</NavLink>
-            </div>
+          <nav className="nav-pill">
+            <span className="nav-brand">⚡ Smart Yield</span>
+            <div className="nav-sep" />
+            <Link href="/"          className="nav-link">Home</Link>
+            <Link href="/vault"     className="nav-link">Vault</Link>
+            <Link href="/dashboard" className="nav-link">Dashboard</Link>
+            <div className="nav-sep" />
+            <InterwovenActions />
           </nav>
-          <main style={{ minHeight: 'calc(100vh - 57px)' }}>
+          <main style={{ paddingTop: 72 }}>
             {children}
           </main>
         </Providers>
       </body>
     </html>
-  );
-}
-
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="nav-link">
-      {children}
-    </Link>
   );
 }

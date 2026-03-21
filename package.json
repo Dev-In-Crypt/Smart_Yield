@@ -1,0 +1,14 @@
+{
+  "name": "initia-hack-orchestrator",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "submission:extract": "node .initia/extract-deployments-from-broadcast.js",
+    "submission:generate": "node .initia/generate-submission.js",
+    "submission:refresh": "npm run submission:extract && npm run submission:generate",
+    "test:contracts": "forge test --root contracts",
+    "test:agent": "npm --prefix agent test",
+    "test:frontend": "npm --prefix frontend run build",
+    "test:all": "npm run test:contracts && npm run test:agent && npm run test:frontend"
+  }
+}

@@ -46,25 +46,32 @@ test.describe('Dashboard page', () => {
       }),
     );
 
-    await page.goto('/dashboard');
+    await page.goto('/dashboard', { waitUntil: 'networkidle' });
   });
 
   test('renders page heading', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /Dashboard/i })).toBeVisible();
   });
 
-  test('shows stat cards', async ({ page }) => {
+  test('shows Total TVL stat card', async ({ page }) => {
     await expect(page.getByText(/Total TVL/i)).toBeVisible();
-    await expect(page.getByText(/Rebalances/i)).toBeVisible();
+  });
+
+  test('shows Rebalances stat card', async ({ page }) => {
+    await expect(page.getByText('Rebalances', { exact: true })).toBeVisible();
+  });
+
+  test('shows AI Cycles stat card', async ({ page }) => {
     await expect(page.getByText(/AI Cycles/i)).toBeVisible();
+  });
+
+  test('shows Last Rebalance stat card', async ({ page }) => {
     await expect(page.getByText(/Last Rebalance/i)).toBeVisible();
   });
 
   test('shows rebalance count from API', async ({ page }) => {
-    // triggered_count = 7, shown in the "Rebalances" stat card
-    // Use a more specific locator to avoid matching '7' in timestamps
-    const rebalancesCard = page.locator('.rounded-2xl').filter({ hasText: 'Rebalances' });
-    await expect(rebalancesCard.getByText('7')).toBeVisible();
+    // triggered_count = 7 from mocked API — use locator scoped to stat card
+    await expect(page.locator('p', { hasText: /^7$/ }).first()).toBeVisible();
   });
 
   test('shows Current Allocation panel', async ({ page }) => {

@@ -40,5 +40,12 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Minitia node data — contains PRIVATE KEYS & MNEMONICS, never commit
+chain_keys/
+.minitia/
+.opinit/
+.relayer/
+.weave/
+
 # Deployment addresses (may contain chain-specific info — commit intentionally)
 # deployments.json  ← intentionally NOT ignored, useful to track
