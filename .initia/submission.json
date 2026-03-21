@@ -8,5 +8,6 @@
   "native_feature": "interwoven-bridge",
   "core_logic_path": "contracts/src/VaultManager.sol",
   "native_feature_frontend_path": "frontend/app/bridge/page.tsx",
-  "demo_video_url": "https://youtu.be/cd49jNYWVvo"
+  "demo_video_url": "https://youtu.be/cd49jNYWVvo",
+  "deployment_link": "https://scan.testnet.initia.xyz/evm-1/evm-contracts/0x9Cea0FAb316bBcc54aAc9D7C08B901E936c62a48"
 }
