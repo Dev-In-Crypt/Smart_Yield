@@ -71,7 +71,7 @@ Hackathon baseline network values (from Initia docs):
 - L1 network: `initiation-2` (testnet)
 - Rollup type: local Interwoven rollup
 - VM: `EVM (minievm)`
-- Current rollup chain ID: `local-rollup-1` (or your unique `<name>-1`)
+- Testnet rollup chain ID: `2124225178762456` (evm-1 on initiation-2)
 - Local endpoints: `http://localhost:26657` (RPC), `http://localhost:1317` (REST), `http://localhost:8545` (EVM JSON-RPC)
 
 Run this manually in a terminal:
