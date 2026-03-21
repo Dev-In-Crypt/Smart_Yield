@@ -1,9 +1,9 @@
 {
   "project_name": "Smart Yield Vaults",
   "repo_url": "https://github.com/Dev-In-Crypt/initiaHack",
-  "commit_sha": "38107854fe0ae12f3f793de69e5a87074be18192",
-  "rollup_chain_id": "local-rollup-1",
-  "deployed_address": "0x6aed4975e5b0180f54899d46e57537ce449f07de",
+  "commit_sha": "fbe9e82",
+  "rollup_chain_id": "2124225178762456",
+  "deployed_address": "0x9Cea0FAb316bBcc54aAc9D7C08B901E936c62a48",
   "vm": "evm",
   "native_feature": "interwoven-bridge",
   "core_logic_path": "contracts/src/VaultManager.sol",

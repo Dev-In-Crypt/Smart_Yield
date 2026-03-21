@@ -22,7 +22,7 @@ cd frontend && npm install && npm run dev
 # Open http://localhost:3000
 ```
 
-> No weave? Connect MetaMask to **Initia testnet** (Chain ID `233`, RPC `https://rpc.evm.initiation-2.initia.xyz`) and use the deployed contracts in `contracts/deployments.json`.
+> **Live on testnet**: Connect MetaMask to **Initia EVM testnet** (Chain ID `2124225178762456`, RPC `https://jsonrpc-evm-1.anvil.asia-southeast.initia.xyz`). Contracts already deployed — see `contracts/deployments.json`.
 
 ---
 
@@ -30,7 +30,7 @@ cd frontend && npm install && npm run dev
 
 - **Project Name**: Smart Yield Vaults
 - **Demo video**: https://youtu.be/cd49jNYWVvo
-- **Vault contract**: `0x6aed4975e5b0180f54899d46e57537ce449f07de`
+- **Vault contract**: `0x9Cea0FAb316bBcc54aAc9D7C08B901E936c62a48` (Initia EVM testnet, chain `2124225178762456`)
 - **Native feature**: Interwoven Bridge via InterwovenKit
 
 ### Project Overview
