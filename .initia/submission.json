@@ -8,5 +8,5 @@
   "native_feature": "interwoven-bridge",
   "core_logic_path": "contracts/src/VaultManager.sol",
   "native_feature_frontend_path": "frontend/app/bridge/page.tsx",
-  "demo_video_url": "https://drive.google.com/file/d/1nYA_eU1qd8Xs9PKQq1MZD2abwGLu_wdK/view?usp=sharing"
+  "demo_video_url": "https://youtu.be/cd49jNYWVvo"
 }
